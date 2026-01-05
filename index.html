@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoneyMaster PRO Ultimate</title>
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" type="image/png">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ===== Reset & Base ===== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;scroll-behavior:smooth;}
+body{background:#f9f9f9;color:#333;line-height:1.6;transition:0.5s;}
+.dark-mode{background:#121212;color:#eee;}
+section{padding:4rem 2rem;}
+
+/* ===== Navbar ===== */
+header{position:sticky;top:0;z-index:1000;background:#0d6efd;transition:0.3s;}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;color:#fff;}
+.navbar .logo{font-size:1.5rem;font-weight:bold;color:#fff;}
+.navbar ul{display:flex;gap:1rem;list-style:none;}
+.navbar ul li a{padding:0.5rem 1rem;border-radius:5px;transition:0.3s;color:#fff;text-decoration:none;}
+.navbar ul li a:hover{background:#0056b3;}
+.mode-toggle{background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;}
+.hamburger{display:none;flex-direction:column;cursor:pointer;gap:5px;}
+.hamburger div{width:25px;height:3px;background:#fff;transition:0.3s;}
+
+/* ===== Hero ===== */
+.hero{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:4rem 2rem;background:#e3f2fd;overflow:hidden;}
+.hero-content{max-width:600px;animation:slideRight 1s ease-out forwards;opacity:0;}
+.hero-img{animation:slideLeft 1s ease-out forwards;opacity:0;}
+.hero-content h1{font-size:2.5rem;margin-bottom:1rem;color:#0d6efd;}
+.hero-content p{font-size:1.2rem;margin-bottom:2rem;}
+.cta-btn{display:inline-block;padding:1rem 2rem;background:#0d6efd;color:#fff;border-radius:8px;transition:0.3s;}
+.cta-btn:hover{background:#0056b3;transform:scale(1.05);}
+
+/* ===== Tips ===== */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;}
+.tip-card{background:#fff;padding:1.5rem;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.1);text-align:center;transition:0.4s;cursor:pointer;opacity:0;transform:translateY(50px);}
+.tip-card:hover{transform:translateY(-10px) scale(1.05);box-shadow:0 8px 20px rgba(0,0,0,0.2);}
+.tip-card img{width:60px;margin-bottom:1rem;}
+
+/* ===== Tabs & Calculator ===== */
+.tab-container{max-width:900px;margin:0 auto;opacity:0;transform:translateY(50px);}
+.tab-buttons{display:flex;justify-content:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;}
+.tab-buttons button{padding:0.7rem 1.5rem;border:none;border-radius:5px;cursor:pointer;background:#0d6efd;color:#fff;transition:0.3s;}
+.tab-buttons button.active{background:#0056b3;}
+.tab-content{display:none;background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);margin-bottom:2rem;}
+.tab-content.active{display:block;}
+.calculator label{display:block;margin:0.5rem 0;font-weight:bold;}
+.calculator input{width:100%;padding:0.5rem;margin-bottom:1rem;border-radius:5px;border:1px solid #ccc;}
+.calculator button.calc-btn{padding:0.7rem 1.5rem;margin-right:0.5rem;border:none;border-radius:5px;cursor:pointer;background:#0d6efd;color:#fff;transition:0.3s;}
+.calculator button.calc-btn:hover{background:#0056b3;transform:scale(1.05);}
+#resultBudget,#resultInvest,#resultDebt{margin-top:1rem;font-weight:bold;text-align:center;}
+
+/* ===== Daily Transactions ===== */
+.transactions{max-width:900px;margin:2rem auto;}
+.transactions input, .transactions select{padding:0.5rem;margin-right:0.5rem;border-radius:5px;border:1px solid #ccc;}
+.transactions button{padding:0.5rem 1rem;border:none;border-radius:5px;background:#0d6efd;color:#fff;cursor:pointer;transition:0.3s;}
+.transactions button:hover{background:#0056b3;}
+.transaction-list{margin-top:1rem;list-style:none;padding:0;}
+.transaction-list li{background:#fff;margin-bottom:0.5rem;padding:0.5rem;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+
+/* ===== Dashboard ===== */
+.dashboard{max-width:900px;margin:3rem auto;text-align:center;}
+.dashboard canvas{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+
+/* ===== Blog ===== */
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;opacity:0;transform:translateY(50px);}
+.blog-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.1);transition:0.3s;cursor:pointer;}
+.blog-card:hover{transform:translateY(-5px) scale(1.02);}
+.blog-card img{width:100%;height:180px;object-fit:cover;}
+.blog-card .content{padding:1rem;}
+
+/* ===== Courses ===== */
+.course-card{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);margin-bottom:2rem;transition:0.3s;opacity:0;transform:translateY(50px);}
+.course-card:hover{transform:scale(1.02);}
+.progress-bar{background:#e0e0e0;border-radius:8px;overflow:hidden;margin:1rem 0;}
+.progress{height:15px;width:0%;background:#36a2eb;border-radius:8px;transition:width 0.5s;}
+
+/* ===== Popup Tips ===== */
+#popup-tip{position:fixed;bottom:20px;right:20px;background:#0d6efd;color:#fff;padding:1rem 1.5rem;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.2);display:none;z-index:1000;animation:slideIn 0.5s;}
+
+/* ===== Footer ===== */
+footer{text-align:center;padding:2rem;background:#333;color:#fff;margin-top:4rem;}
+footer a{color:#0d6efd;margin:0 0.5rem;}
+
+/* ===== Animations ===== */
+@keyframes slideRight{from{opacity:0;transform:translateX(-50px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(50px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideIn{from{opacity:0;transform:translateY(50px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:768px){.navbar ul{display:none;flex-direction:column;background:#0d6efd;position:absolute;top:60px;right:0;width:200px;border-radius:8px;overflow:hidden;}.navbar ul.show{display:flex;}.hamburger{display:flex;}}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header>
+<nav class="navbar">
+<div class="logo">Money Management</div>
+<ul id="nav-links">
+<li><a href="#home">Home</a></li>
+<li><a href="#tips">Tips</a></li>
+<li><a href="#calculator">Kalkulator</a></li>
+<li><a href="#transactions">Transaksi</a></li>
+<li><a href="#dashboard">Dashboard</a></li>
+<li><a href="#blog">Artikel</a></li>
+<li><a href="#courses">Kursus</a></li>
+</ul>
+<div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
+<button class="mode-toggle">🌙</button>
+</nav>
+</header>
+
+<!-- Hero -->
+<section id="home" class="hero">
+<div class="hero-content">
+<h1>Kuasai Keuanganmu: Panduan Lengkap Money Management</h1>
+<p>Pelajari cara mengelola uang, menabung, berinvestasi, dan mengatur keuangan pribadi dengan lebih cerdas.</p>
+<a href="#tips" class="cta-btn">Mulai Atur Uangmu Sekarang</a>
+</div>
+<div class="hero-img">
+<img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Ilustrasi Keuangan" width="250">
+</div>
+</section>
+
+<!-- Tips -->
+<section id="tips">
+<h2>Tips & Strategi Keuangan</h2>
+<div class="tips-grid">
+<div class="tip-card"><img src="https://cdn-icons-png.flaticon.com/512/4333/4333602.png" alt=""><h3>Membuat Anggaran</h3><p>Catat pengeluaran & pendapatan mingguan/bulanan.</p></div>
+<div class="tip-card"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt=""><h3>Menabung & Dana Darurat</h3><p>Sisihkan minimal 10% penghasilan untuk tabungan & emergency fund.</p></div>
+<div class="tip-card"><img src="https://cdn-icons-png.flaticon.com/512/1055/1055646.png" alt=""><h3>Investasi Pemula</h3><p>Mulai dari saham, reksadana, emas, atau deposito.</p></div>
+<div class="tip-card"><img src="https://cdn-icons-png.flaticon.com/512/2550/2550653.png" alt=""><h3>Mengelola Utang</h3><p>Atur pembayaran utang, cicilan, dan kartu kredit.</p></div>
+<div class="tip-card"><img src="https://cdn-icons-png.flaticon.com/512/685/685352.png" alt=""><h3>Penghasilan Sampingan</h3><p>Kembangkan sumber penghasilan tambahan.</p></div>
+<div class="tip-card"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt=""><h3>Psikologi Uang</h3><p>Hindari belanja impulsif dan kendalikan pola konsumsi.</p></div>
+</div>
+</section>
+
+<!-- Kalkulator Tabs -->
+<section id="calculator">
+<h2>Kalkulator Interaktif</h2>
+<div class="tab-container">
+<div class="tab-buttons">
+<button class="active" data-tab="budget">Budgeting</button>
+<button data-tab="investment">Investasi</button>
+<button data-tab="debt">Utang</button>
+</div>
+
+<div id="budget" class="tab-content active">
+<form class="calculator" id="budgetForm">
+<label>Pendapatan Bulanan:</label><input type="number" id="income" required>
+<label>Pengeluaran Bulanan:</label><input type="number" id="expenses" required>
+<label>Tabungan Bulanan:</label><input type="number" id="savings" required>
+<button type="submit" class="calc-btn">Hitung</button>
+<button type="button" id="resetBudget">Reset</button>
+</form>
+<div id="resultBudget"></div>
+<canvas id="budgetChart" width="400" height="200"></canvas>
+</div>
+
+<div id="investment" class="tab-content">
+<form class="calculator" id="investmentForm">
+<label>Jumlah Investasi Awal:</label><input type="number" id="investAmount" required>
+<label>Bunga / Tahun (%):</label><input type="number" id="investRate" required>
+<label>Jangka Waktu (tahun):</label><input type="number" id="investYears" required>
+<button type="submit" class="calc-btn">Hitung Investasi</button>
+<button type="button" id="resetInvest">Reset</button>
+</form>
+<div id="resultInvest"></div>
+<canvas id="investChart" width="400" height="200"></canvas>
+</div>
+
+<div id="debt" class="tab-content">
+<form class="calculator" id="debtForm">
+<label>Jumlah Utang:</label><input type="number" id="debtAmount" required>
+<label>Bunga / Tahun (%):</label><input type="number" id="debtRate" required>
+<label>Lama Cicilan (bulan):</label><input type="number" id="debtMonths" required>
+<button type="submit" class="calc-btn">Hitung Utang</button>
+<button type="button" id="resetDebt">Reset</button>
+</form>
+<div id="resultDebt"></div>
+<canvas id="debtChart" width="400" height="200"></canvas>
+</div>
+</div>
+</section>
+
+<!-- Transaksi Harian -->
+<section id="transactions">
+<h2>Catat Transaksi Harian</h2>
+<div class="transactions">
+<input type="text" id="transName" placeholder="Deskripsi" required>
+<input type="number" id="transAmount" placeholder="Jumlah" required>
+<select id="transType">
+<option value="income">Pemasukan</option>
+<option value="expense">Pengeluaran</option>
+</select>
+<select id="transCategory">
+<option value="Makanan">Makanan</option>
+<option value="Transport">Transport</option>
+<option value="Hiburan">Hiburan</option>
+<option value="Investasi">Investasi</option>
+<option value="Tabungan">Tabungan</option>
+</select>
+<button id="addTrans">Tambah</button>
+<ul class="transaction-list" id="transList"></ul>
+</div>
+</section>
+
+<!-- Dashboard -->
+<section id="dashboard">
+<h2>Dashboard Bulanan</h2>
+<div class="dashboard">
+<canvas id="dashboardChart" width="400" height="200"></canvas>
+</div>
+</section>
+
+<!-- Blog -->
+<section id="blog">
+<h2>Artikel Edukatif</h2>
+<div class="blog-grid">
+<div class="blog-card"><img src="https://cdn-icons-png.flaticon.com/512/2910/2910767.png" alt=""><div class="content"><h3>Cara Menabung Efektif</h3><p>Pelajari metode menabung yang praktis dan terstruktur.</p></div></div>
+<div class="blog-card"><img src="https://cdn-icons-png.flaticon.com/512/2910/2910759.png" alt=""><div class="content"><h3>Dasar Investasi</h3><p>Kenali instrumen investasi aman untuk meningkatkan kekayaan.</p></div></div>
+<div class="blog-card"><img src="https://cdn-icons-png.flaticon.com/512/2910/2910777.png" alt=""><div class="content"><h3>Mengelola Utang</h3><p>Tips efektif melunasi utang dan mengatur cicilan.</p></div></div>
+</div>
+</section>
+
+<!-- Courses -->
+<section id="courses">
+<h2>Modul Kursus Interaktif</h2>
+<div class="course-card">
+<h3>Langkah 1: Membuat Anggaran</h3>
+<p>Pelajari cara membuat budget mingguan/bulanan.</p>
+<div class="progress-bar"><div class="progress" style="width:0%"></div></div>
+<button class="cta-btn complete-module">Selesaikan Modul</button>
+</div>
+<div class="course-card">
+<h3>Langkah 2: Menabung & Dana Darurat</h3>
+<p>Sisihkan minimal 10% penghasilan untuk tabungan.</p>
+<div class="progress-bar"><div class="progress" style="width:0%"></div></div>
+<button class="cta-btn complete-module">Selesaikan Modul</button>
+</div>
+</section>
+
+<div id="popup-tip"></div>
+
+<footer>
+<p>&copy; 2026 MoneyMaster PRO Ultimate. Semua hak cipta dilindungi.</p>
+<div><a href="#">Instagram</a> | <a href="#">Facebook</a> | <a href="#">Twitter</a></div>
+</footer>
+
+<script>
+// Hamburger
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('nav-links');
+hamburger.addEventListener('click', ()=>navLinks.classList.toggle('show'));
+
+// Dark Mode
+const modeToggle = document.querySelector('.mode-toggle');
+modeToggle.addEventListener('click', ()=>document.body.classList.toggle('dark-mode'));
+
+// Tabs
+const tabButtons = document.querySelectorAll('.tab-buttons button');
+const tabContents = document.querySelectorAll('.tab-content');
+tabButtons.forEach(btn=>{
+btn.addEventListener('click',()=>{
+tabButtons.forEach(b=>b.classList.remove('active'));
+tabContents.forEach(c=>c.classList.remove('active'));
+btn.classList.add('active');
+document.getElementById(btn.dataset.tab).classList.add('active');
+});
+});
+
+// Budget Calculator
+const budgetForm = document.getElementById('budgetForm');
+const budgetChart = document.getElementById('budgetChart').getContext('2d');
+let budgetGraph;
+budgetForm.addEventListener('submit', e=>{
+e.preventDefault();
+let income = parseFloat(document.getElementById('income').value);
+let expenses = parseFloat(document.getElementById('expenses').value);
+let savings = parseFloat(document.getElementById('savings').value);
+let remaining = income - expenses - savings;
+document.getElementById('resultBudget').innerText = `Sisa uang: Rp ${remaining.toLocaleString()}`;
+if(budgetGraph) budgetGraph.destroy();
+budgetGraph = new Chart(budgetChart,{type:'pie',data:{labels:['Pengeluaran','Tabungan','Sisa'],datasets:[{data:[expenses,savings,remaining],backgroundColor:['#ff6384','#36a2eb','#ffce56']}]},options:{responsive:true}});
+});
+document.getElementById('resetBudget').addEventListener('click',()=>{budgetForm.reset();document.getElementById('resultBudget').innerText='';if(budgetGraph)budgetGraph.destroy();});
+
+// Investment Calculator
+const investForm = document.getElementById('investmentForm');
+const investChart = document.getElementById('investChart').getContext('2d');
+let investGraph;
+investForm.addEventListener('submit', e=>{
+e.preventDefault();
+let principal=parseFloat(document.getElementById('investAmount').value);
+let rate=parseFloat(document.getElementById('investRate').value)/100;
+let years=parseInt(document.getElementById('investYears').value);
+let future = principal*Math.pow(1+rate,years);
+document.getElementById('resultInvest').innerText=`Nilai investasi: Rp ${future.toLocaleString()}`;
+if(investGraph) investGraph.destroy();
+investGraph = new Chart(investChart,{type:'line',data:{labels:[...Array(years+1).keys()],datasets:[{label:'Investasi',data:[...Array(years+1).keys()].map(y=>principal*Math.pow(1+rate,y)),borderColor:'#36a2eb',fill:false}]}});
+});
+document.getElementById('resetInvest').addEventListener('click',()=>{investForm.reset();document.getElementById('resultInvest').innerText='';if(investGraph) investGraph.destroy();});
+
+// Debt Calculator
+const debtForm = document.getElementById('debtForm');
+const debtChart = document.getElementById('debtChart').getContext('2d');
+let debtGraph;
+debtForm.addEventListener('submit', e=>{
+e.preventDefault();
+let debt=parseFloat(document.getElementById('debtAmount').value);
+let rate=parseFloat(document.getElementById('debtRate').value)/100/12;
+let months=parseInt(document.getElementById('debtMonths').value);
+let monthly = (debt*rate)/(1-Math.pow(1+rate,-months));
+document.getElementById('resultDebt').innerText=`Cicilan per bulan: Rp ${monthly.toLocaleString()}`;
+if(debtGraph) debtGraph.destroy();
+debtGraph = new Chart(debtChart,{type:'bar',data:{labels:[...Array(months).keys()].map(m=>m+1),datasets:[{label:'Cicilan',data:[...Array(months).keys()].map(()=>monthly),backgroundColor:'#ff6384'}]}});
+});
+document.getElementById('resetDebt').addEventListener('click',()=>{debtForm.reset();document.getElementById('resultDebt').innerText='';if(debtGraph) debtGraph.destroy();});
+
+// Transactions
+const transList = document.getElementById('transList');
+document.getElementById('addTrans').addEventListener('click',()=>{
+let name = document.getElementById('transName').value;
+let amount = parseFloat(document.getElementById('transAmount').value);
+let type = document.getElementById('transType').value;
+let category = document.getElementById('transCategory').value;
+if(name && amount){
+let li = document.createElement('li');
+li.textContent = `${name} | Rp ${amount.toLocaleString()} | ${type} | ${category}`;
+transList.appendChild(li);
+document.getElementById('transName').value='';
+document.getElementById('transAmount').value='';
+}
+});
+
+// Dashboard Chart
+const dashCtx = document.getElementById('dashboardChart').getContext('2d');
+let dashChart = new Chart(dashCtx,{type:'doughnut',data:{labels:['Pengeluaran','Tabungan','Pemasukan'],datasets:[{data:[500000,200000,1000000],backgroundColor:['#ff6384','#36a2eb','#ffce56']}]},options:{responsive:true}});
+
+// Courses Progress
+document.querySelectorAll('.complete-module').forEach((btn,index)=>{
+btn.addEventListener('click',()=>{
+let progress = btn.parentElement.querySelector('.progress');
+progress.style.width = '100%';
+btn.disabled = true;
+});
+});
+
+// Popup Tip
+function showTip(message){
+const popup = document.getElementById('popup-tip');
+popup.textContent = message;
+popup.style.display = 'block';
+setTimeout(()=>popup.style.display='none',4000);
+}
+setTimeout(()=>showTip('Tips Harian: Sisihkan minimal 10% penghasilanmu!'),2000);
+
+// Scroll Animations
+window.addEventListener('scroll',()=>{
+document.querySelectorAll('.tip-card,.tab-container,.blog-grid,.course-card,.hero-img,.hero-content').forEach(el=>{
+let top = el.getBoundingClientRect().top;
+if(top < window.innerHeight - 50){el.style.opacity='1';el.style.transform='translateY(0)';}
+});
+});
+</script>
+
+</body>
+</html>
